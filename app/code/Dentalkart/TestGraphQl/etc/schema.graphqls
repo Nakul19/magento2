@@ -1,0 +1,124 @@
+type Query {
+	cart: Cart @doc(description: "returns cart items") @resolver(class: "\\Dentalkart\\TestGraphQl\\Model\\Resolver\\Cart")
+	getAvailableShippingMethodsOnCart(input: EstimateShippingMethodsInput): EstimateShippingMethodsOutput @resolver(class: "\\Dentalkart\\TestGraphQl\\Model\\Resolver\\GetShippingMethodsOnCart")
+	navigation(id: Int, level: Int): [CategoryTree] @resolver(class: "\\Dentalkart\\TestGraphQl\\Model\\Resolver\\GetNavigation")
+}
+
+type Mutation {
+	addProductToCart(input: CartItemInput): CartItemOutput @resolver(class: "\\Dentalkart\\TestGraphQl\\Model\\Resolver\\AddProductFromCart")
+	removeFromCart(itemId: Int, cartId: String): Boolean @resolver(class: "\\Dentalkart\\TestGraphQl\\Model\\Resolver\\RemoveProductFromCart")
+	applyCouponToCart(input: ApplyCouponToCartInput): ApplyCouponToCartOutput @resolver(class: "\\Dentalkart\\TestGraphQl\\Model\\Resolver\\ApplyCouponToCart")
+	removeCouponFromCart(input: RemoveCouponFromCartInput): RemoveCouponFromCartOutput @resolver(class: "\\Dentalkart\\TestGraphQl\\Model\\Resolver\\RemoveCouponFromCart")
+}
+
+input ApplyCouponToCartInput {
+    cart_id: String!
+    coupon_code: String!
+}
+
+type ApplyCouponToCartOutput {
+    cart: Cart!
+}
+
+type AppliedCoupon {
+    code: String!
+}
+
+input RemoveCouponFromCartInput {
+    cart_id: String!
+}
+
+type RemoveCouponFromCartOutput {
+    cart: Cart
+}
+
+input CartItemInput {
+    sku: String
+    qty: Float
+	quote_id: String
+}
+
+type Cart {
+	id: String
+	items: [CartItemOutput]
+	items_count: Int
+	items_qty: Int
+	totals: Totals
+	applied_coupon: AppliedCoupon
+}
+
+type CartItemOutput {
+	item_id: Int
+    sku: String!
+    name: String
+    qty: Float
+    price: Float
+	product_type: String
+	quote_id: String
+}
+
+type Totals {
+	grand_total: Float
+	base_grand_total: Float
+	subtotal: Float
+	base_subtotal: Float
+	discount_amount: Float
+	base_discount_amount: Float
+	subtotal_with_discount: Float
+	base_subtotal_with_discount: Float
+	shipping_amount: Float
+	base_shipping_amount: Float
+	shipping_discount_amount: Float
+	base_shipping_discount_amount: Float
+	tax_amount: Float
+	base_tax_amount: Float
+	weee_tax_applied_amount: Float
+	shipping_tax_amount: Float
+	base_shipping_tax_amount: Float
+	subtotal_incl_tax: Float
+	base_subtotal_incl_tax: Float
+	shipping_incl_tax: Float
+	base_shipping_incl_tax: Float
+	base_currency_code: String
+	quote_currency_code: String
+	coupon_code: String
+	total_segments: String
+	items_qty: Int
+}
+
+input EstimateShippingMethodsInput {
+	cart_id: String!
+	address: ShippingAdressInput
+}
+
+input ShippingAdressInput {
+	region: String
+	region_id: Int
+	country_id: String
+	postcode: String
+}
+
+type EstimateShippingMethodsOutput {
+	shippingMethods: [ShippingMethod]
+}
+
+type ShippingMethod {
+	error_message: String
+	carrier_code: String
+	method_code: String
+	carrier_title: String
+	method_title: String
+	amount: Int
+	base_amount: Int
+	available: Boolean
+	price_excl_tax: Int
+	price_incl_tax: Int
+}
+
+type NavigationTree {
+    id: Int
+    name: String
+    url_key: String
+    url_path: String
+    children_data: [NavigationTree]
+}

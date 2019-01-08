@@ -1,0 +1,26 @@
+# Copyright © Magento, Inc. All rights reserved.
+# See COPYING.txt for license details.
+
+type Query {
+    wishlist: WishlistOutput @resolver(class: "\\Dentalkart\\WishlistGraphQl\\Model\\Resolver\\GetWishlist") 
+}
+
+type Mutation {
+    AddItemToWishlist(productId: Int): String @resolver(class: "\\Dentalkart\\WishlistGraphQl\\Model\\Resolver\\AddWishlistItem")
+    RemoveItemFromWishlist(wishlistItemId: Int): String @resolver(class: "\\Dentalkart\\WishlistGraphQl\\Model\\Resolver\\RemoveWishlistItem")
+    AddToCartFromWishlist(wishlistItemId: Int): String @resolver(class: "\\Dentalkart\\WishlistGraphQl\\Model\\Resolver\\AddToCartFromWishlist")
+}
+
+type WishlistOutput {
+    items: [WishlistItem]
+}
+
+type WishlistItem {
+    id: Int
+    item_id: Int
+    product_id: Int
+    qty: Int
+    description: String
+    added_at: String
+    product: ProductInterface
+}

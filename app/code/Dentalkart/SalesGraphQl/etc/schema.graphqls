@@ -1,0 +1,39 @@
+# Copyright © Magento, Inc. All rights reserved.
+# See COPYING.txt for license details.
+
+type Query {
+    customerOrders: CustomerOrders @resolver(class: "Dentalkart\\SalesGraphQl\\Model\\Resolver\\Orders") @doc(description: "List of customer orders")
+    shipments(id: Int): [ShipmentItem] @resolver(class: "Dentalkart\\SalesGraphQl\\Model\\Resolver\\GetShipments")
+}
+
+type CustomerOrder @doc(description: "Order mapping fields") {
+    id: Int
+    increment_id: String
+    created_at: String
+    grand_total: Float
+    status: String
+}
+
+type CustomerOrders {
+    items: [CustomerOrder] @doc(description: "Array of orders")
+}
+
+
+type ShipmentItem {
+    billing_address_id: Int
+    created_at: String
+    customer_id: Int
+    entity_id: Int
+    increment_id: String
+    order_id: Int
+    shipping_address_id: Int
+    total_qty: Int
+	shipment_status: Int
+	items: [shipmentItemInterface]
+}
+
+type shipmentItemInterface {
+	name: String
+	price: Int
+	sku: String
+}
