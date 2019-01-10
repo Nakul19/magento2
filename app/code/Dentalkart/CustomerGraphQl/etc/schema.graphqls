@@ -10,6 +10,9 @@ type Mutation {
     revokeCustomerToken: RevokeCustomerTokenOutput @resolver(class: "\\Dentalkart\\CustomerGraphQl\\Model\\Resolver\\RevokeCustomerToken") @doc(description:"Revoke the customer token")
     changeCustomerPassword(currentPassword: String!, newPassword: String!): Customer @resolver(class: "\\Dentalkart\\CustomerGraphQl\\Model\\Resolver\\ChangePassword") @doc(description:"Changes the password for the logged-in customer")
     updateCustomer (input: UpdateCustomerInput!): UpdateCustomerOutput @resolver(class: "\\Dentalkart\\CustomerGraphQl\\Model\\Resolver\\UpdateCustomer") @doc(description:"Update the customer's personal information")
+    addAddress (input: AddAddressInput!): AddAddressOutput @resolver(class: "\\Dentalkart\\CustomerGraphQl\\Model\\Resolver\\Address\\AddAddress") @doc(description:"Add new customer address")
+    updateAddress (input: UpdateAddressInput!): UpdateAddressOutput @resolver(class: "\\Dentalkart\\CustomerGraphQl\\Model\\Resolver\\Address\\UpdateAddress") @doc(description:"Update customer address")
+    deleteAddress (input: DeleteAddressInput!): DeleteAddressOutput @resolver(class: "\\Dentalkart\\CustomerGraphQl\\Model\\Resolver\\Address\\DeleteAddress") @doc(description:"Update customer address")
 }
 
 type CustomerToken {
@@ -27,11 +30,38 @@ input UpdateCustomerInput {
     password: String
     taxvat: String
     is_subscribed: Boolean
+}
+
+type UpdateCustomerOutput {
+    customer: Customer!
+}
+
+input UpdateAddressInput {
     address: CustomerAddressInput
 }
 
+type UpdateAddressOutput {
+    customer: Customer!
+}
+
+input AddAddressInput {
+    address: CustomerAddressInput
+}
+
+type AddAddressOutput {
+    customer: Customer!
+}
+
+input DeleteAddressInput {
+    id: Int
+}
+
+type DeleteAddressOutput {
+    customer: Customer!
+}
+
 input CustomerAddressInput @doc(description: "CustomerAddress contains detailed information about a customer's billing and shipping addresses"){
-    id: Int! @doc(description: "The ID assigned to the address object")
+    id: Int @doc(description: "The ID assigned to the address object")
     region: CustomerAddressRegionInput @doc(description: "An object containing the region name, region code, and region ID")
     region_id: Int @doc(description: "A number that uniquely identifies the state, province, or other area")
     country_id: String @doc(description: "The customer's country")
@@ -48,15 +78,10 @@ input CustomerAddressInput @doc(description: "CustomerAddress contains detailed 
     suffix: String @doc(description: "A value such as Sr., Jr., or III")
     vat_id: String @doc(description: "The customer's Tax/VAT number (for corporate customers)")
     default_shipping: Boolean @doc(description: "Indicates whether the address is the default shipping address")
-    default_billing: Boolean @doc(description: "Indicates whether the address is the default billing address")
 }
 
 input CustomerAddressRegionInput @doc(description: "CustomerAddressRegion defines the customer's state or province") {
     region_code: String @doc(description: "The address region code")
     region: String @doc(description: "The state or province name")
     region_id: Int @doc(description: "Uniquely identifies the region")
-}
-
-type UpdateCustomerOutput {
-    customer: Customer!
 }

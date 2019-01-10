@@ -68,29 +68,7 @@ class UpdateAccountInformation
      * @throws GraphQlInputException
      * @throws GraphQlAlreadyExistsException
      */
-
-    private function updateAddress(array $data){
-        $addressId = $data['address']['id'];
-        try {
-            $address = $this->addressRepository->getById($addressId);
-        } catch (\Exception $e) {
-            throw new GraphQlInputException(__('Wrong address id provided.'));
-        }
-        foreach ($data['address'] as $key => $value) {
-            if (isset($value)) {
-                $address->setData($key, $value);
-            }
-        }
-        try {
-            $this->addressRepository->save($address);
-        } catch (AlreadyExistsException $e) {
-            throw new GraphQlAlreadyExistsException(
-                __('Some problem occured try again later.'),
-                $e
-            );
-        }
-    }
-
+     
     public function execute(int $customerId, array $data): void
     {
 
@@ -120,25 +98,12 @@ class UpdateAccountInformation
         $customer->setStoreId($this->storeManager->getStore()->getId());
 
         try {
-            if (isset($data['address'])) {
-                if (!isset($data['address']['id'])) {
-                    throw new GraphQlInputException(__('Please mention address id.'));
-                }
-                $this->updateAddress($data);
-            }
-
             $this->customerRepository->save($customer);
         } catch (AlreadyExistsException $e) {
             throw new GraphQlAlreadyExistsException(
                 __('A customer with the same email address already exists in an associated website.'),
                 $e
             );
-        }
-        if (isset($data['address'])) {
-            if (!isset($data['address']['id'])) {
-                throw new GraphQlInputException(__('Please mention address id.'));
-            }
-            $this->updateAddress($data);
         }
     }
 }
